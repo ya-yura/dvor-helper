@@ -7,9 +7,6 @@ import {
   Maximize2,
   X,
   Layers,
-  ShieldCheck,
-  Building2,
-  Users,
   Eye,
   Copy,
   FileCode2,
@@ -17,12 +14,7 @@ import {
   CheckCircle2,
   Circle,
   MessageSquare,
-  Scale,
-  FileText,
-  Rocket,
-  HelpCircle,
   ArrowRight,
-  Sliders,
 } from 'lucide-react';
 import {
   COLORWAYS,
