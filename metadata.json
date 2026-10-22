@@ -1,0 +1,6 @@
+{
+  "name": "ДВОР — Brand Identity & Square Logo Studio",
+  "description": "World-class square logo and brand identity system for a resident-to-resident services marketplace in modern residential complexes.",
+  "requestFramePermissions": [],
+  "majorCapabilities": ["MAJOR_CAPABILITY_SERVER_SIDE_GEMINI_API"]
+}
