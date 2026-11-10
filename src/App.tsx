@@ -23,6 +23,15 @@ import {
   LogoConceptId,
   SquareLogoSVG,
 } from './components/SquareLogoSVG';
+import { A4FlyerStudio } from './components/A4FlyerStudio';
+import { MonetizationAndGrowthStudio } from './components/MonetizationAndGrowthStudio';
+import { AgentPromptsStudio } from './components/AgentPromptsStudio';
+import { DesignReferencesStudio } from './components/DesignReferencesStudio';
+import { KrasnodarSeedStudio } from './components/KrasnodarSeedStudio';
+import { UnblockableGrowthStudio } from './components/UnblockableGrowthStudio';
+import { AiAgentGrowthPromptsStudio } from './components/AiAgentGrowthPromptsStudio';
+import { AgentTroubleshootingStudio } from './components/AgentTroubleshootingStudio';
+import { CodexAutonomousGrowthStudio } from './components/CodexAutonomousGrowthStudio';
 import {
   ATOMIC_STEPS,
   LEGAL_DOCUMENTS,
@@ -32,11 +41,24 @@ import {
   RESPONSIBILITY_MATRIX,
 } from './data/gtmPlaybookData';
 
-type ActiveWorkspaceTab = 'playbook' | 'scripts' | 'legal' | 'logo';
+type ActiveWorkspaceTab =
+  | 'codex-auto'
+  | 'troubleshoot'
+  | 'ai-growth'
+  | 'unblockable'
+  | 'krd-seed'
+  | 'ux-gallery'
+  | 'prompts'
+  | 'monetization'
+  | 'flyer'
+  | 'playbook'
+  | 'scripts'
+  | 'legal'
+  | 'logo';
 
 export default function App() {
-  // Primary workspace tab — default to the new Atomic Playbook so the user immediately sees their action plan, with 1-click access to Scripts, Legal/Data Docs, and the 1:1 Logo Studio
-  const [activeTab, setActiveTab] = useState<ActiveWorkspaceTab>('playbook');
+  // Default to the Codex Autonomous Growth Methodologies Studio
+  const [activeTab, setActiveTab] = useState<ActiveWorkspaceTab>('codex-auto');
 
   // Playbook interactive checklist state persisted in localStorage
   const [completedChecklist, setCompletedChecklist] = useState<Record<string, boolean>>(() => {
@@ -77,7 +99,7 @@ export default function App() {
     useState<LegalDocumentTemplate['id']>('terms-intermediary');
   const [docBotName, setDocBotName] = useState<string>('СВОИ · ДВОР');
   const [docOwnerName, setDocOwnerName] = useState<string>('ИП / Самозанятый Администратор Сервиса');
-  const [docSupportContact, setDocSupportContact] = useState<string>('@dvor_support_bot');
+  const [docSupportContact, setDocSupportContact] = useState<string>('@mc6bot');
   const [docComplexName, setDocComplexName] = useState<string>('ЖК «Резиденция Парк»');
 
   const activeLegalDoc =
@@ -85,7 +107,7 @@ export default function App() {
   const renderedLegalText = activeLegalDoc.contentTemplate({
     botName: docBotName || 'СВОИ · ДВОР',
     ownerName: docOwnerName || 'Администратор Сервиса',
-    supportContact: docSupportContact || '@support',
+    supportContact: docSupportContact || '@mc6bot',
     complexName: docComplexName || 'Ваш ЖК',
   });
 
@@ -93,7 +115,7 @@ export default function App() {
     const text = doc.contentTemplate({
       botName: docBotName || 'СВОИ · ДВОР',
       ownerName: docOwnerName || 'Администратор Сервиса',
-      supportContact: docSupportContact || '@support',
+      supportContact: docSupportContact || '@mc6bot',
       complexName: docComplexName || 'Ваш ЖК',
     });
     const blob = new Blob([text], { type: 'text/markdown;charset=utf-8' });
@@ -225,110 +247,113 @@ export default function App() {
 
   return (
     <div className="min-h-screen bg-[#050505] text-[#F4F4F0] flex flex-col">
-      {/* Top Bar Contract: 1-row, 3-zone header */}
-      <header className="sticky top-0 z-30 flex items-center justify-between gap-8 px-6 lg:px-12 py-4 bg-[#050505]/95 backdrop-blur-md border-b border-zinc-800/80">
-        <a
-          href="#top"
-          onClick={(e) => {
-            e.preventDefault();
-            setActiveTab('playbook');
-          }}
-          className="text-lg font-bold tracking-tight text-[#F4F4F0] font-display whitespace-nowrap shrink-0"
-        >
-          СВОИ · ДВОР
-        </a>
+      {/* Top Bar Contract: Header + Unified 12-Section Workspace Bar (hidden when printing A4 poster) */}
+      <header className="no-print sticky top-0 z-30 bg-[#050505]/95 backdrop-blur-md border-b border-zinc-800/80">
+        <div className="max-w-[1380px] w-full mx-auto px-6 lg:px-12 py-3.5 flex items-center justify-between gap-4">
+          <a
+            href="#top"
+            onClick={(e) => {
+              e.preventDefault();
+              setActiveTab('troubleshoot');
+            }}
+            className="flex items-center gap-2.5 text-lg font-bold tracking-tight text-[#F4F4F0] font-display whitespace-nowrap shrink-0"
+          >
+            <span className="w-2.5 h-2.5 rounded-full bg-[#F2B705]" />
+            <span>СВОИ · ДВОР</span>
+            <span className="hidden sm:inline-block text-xs font-mono-tabular text-zinc-400 font-normal">
+              | ЦЕНТР УПРАВЛЕНИЯ И РОСТА ЖК
+            </span>
+          </a>
 
-        <nav className="hidden md:flex items-center gap-8 text-sm font-medium text-zinc-400">
-          <button
-            onClick={() => setActiveTab('playbook')}
-            className={`transition-colors whitespace-nowrap shrink-0 cursor-pointer ${
-              activeTab === 'playbook'
-                ? 'text-[#F2B705] underline underline-offset-8'
-                : 'hover:text-[#F4F4F0]'
-            }`}
-          >
-            Атомарный план внедрения
-          </button>
-          <button
-            onClick={() => setActiveTab('scripts')}
-            className={`transition-colors whitespace-nowrap shrink-0 cursor-pointer ${
-              activeTab === 'scripts'
-                ? 'text-[#F2B705] underline underline-offset-8'
-                : 'hover:text-[#F4F4F0]'
-            }`}
-          >
-            Скрипты и Возражения
-          </button>
-          <button
-            onClick={() => setActiveTab('legal')}
-            className={`transition-colors whitespace-nowrap shrink-0 cursor-pointer ${
-              activeTab === 'legal'
-                ? 'text-[#F2B705] underline underline-offset-8'
-                : 'hover:text-[#F4F4F0]'
-            }`}
-          >
-            Ответственность и 152-ФЗ
-          </button>
-          <button
-            onClick={() => setActiveTab('logo')}
-            className={`transition-colors whitespace-nowrap shrink-0 cursor-pointer ${
-              activeTab === 'logo'
-                ? 'text-[#F2B705] underline underline-offset-8'
-                : 'hover:text-[#F4F4F0]'
-            }`}
-          >
-            Квадратный логотип 1:1
-          </button>
-        </nav>
+          <div className="flex items-center gap-2.5 shrink-0">
+            <a
+              href="https://t.me/mc6bot?start=jk_ef037ca3-bdca-412c-89ab-a36b16e7b017"
+              target="_blank"
+              rel="noopener noreferrer"
+              className="hidden sm:inline-flex items-center gap-1.5 px-3 py-1.5 text-xs font-mono-tabular text-emerald-300 bg-emerald-950/50 border border-emerald-700/40 rounded-lg hover:bg-emerald-900/50 transition-colors"
+            >
+              <span>@mc6bot (Инвайт ЖК)</span>
+              <ArrowRight className="w-3.5 h-3.5" />
+            </a>
+            <button
+              onClick={() => setActiveTab(activeTab === 'logo' ? 'codex-auto' : 'logo')}
+              className="px-3.5 py-1.5 text-xs font-semibold text-[#050505] bg-[#F2B705] rounded-lg hover:bg-[#f7c62e] transition-colors whitespace-nowrap shrink-0 cursor-pointer"
+            >
+              {activeTab === 'logo' ? 'К Промптам Codex' : 'Логотип 1:1'}
+            </button>
+          </div>
+        </div>
 
-        <div className="flex items-center gap-3 shrink-0">
-          <button
-            onClick={() => setActiveTab(activeTab === 'logo' ? 'playbook' : 'logo')}
-            className="px-4 py-2 text-xs font-semibold text-[#050505] bg-[#F2B705] rounded-lg hover:bg-[#f7c62e] transition-colors whitespace-nowrap shrink-0 cursor-pointer"
-          >
-            {activeTab === 'logo' ? 'К плану продвижения ЖК' : 'Открыть студию логотипа 1:1'}
-          </button>
+        {/* All 13 Sections Navigation Strip (Desktop & Mobile) */}
+        <div className="max-w-[1380px] w-full mx-auto px-6 lg:px-12 pb-3 flex items-center gap-1.5 overflow-x-auto">
+          {[
+            { id: 'codex-auto', label: '⚡ Codex: Авто-Приток (6 методологий)' },
+            { id: 'troubleshoot', label: '1. Разбор 4 Отчётов + Фиксы' },
+            { id: 'ai-growth', label: '2. Холодный Старт (0→500)' },
+            { id: 'unblockable', label: '3. Анти-Бан Посев 0 ₽' },
+            { id: 'krd-seed', label: '4. 20 ЖК Краснодара' },
+            { id: 'ux-gallery', label: '5. 24 UX/UI Референса' },
+            { id: 'prompts', label: '6. Промпты Монетизации (5)' },
+            { id: 'monetization', label: '7. Монетизация (8 моделей)' },
+            { id: 'flyer', label: '8. Листовка А4 (QR 300 DPI)' },
+            { id: 'playbook', label: '9. План внедрения' },
+            { id: 'scripts', label: '10. Скрипты и Возражения' },
+            { id: 'legal', label: '11. Документы 152-ФЗ' },
+            { id: 'logo', label: '12. Логотип 1:1' },
+          ].map((tab) => (
+            <button
+              key={tab.id}
+              onClick={() => setActiveTab(tab.id as ActiveWorkspaceTab)}
+              className={`px-3 py-1.5 text-xs font-semibold rounded-lg whitespace-nowrap shrink-0 transition-all cursor-pointer ${
+                activeTab === tab.id
+                  ? 'bg-[#F2B705] text-[#050505] shadow-sm'
+                  : 'bg-zinc-900/90 text-zinc-300 hover:bg-zinc-800 hover:text-[#F4F4F0]'
+              }`}
+            >
+              {tab.label}
+            </button>
+          ))}
         </div>
       </header>
 
-      {/* Mobile Workspace Switcher */}
-      <div className="md:hidden px-6 pt-4 flex items-center gap-2 overflow-x-auto border-b border-zinc-800/80 pb-3">
-        <button
-          onClick={() => setActiveTab('playbook')}
-          className={`px-3 py-1.5 text-xs font-medium rounded-lg whitespace-nowrap shrink-0 ${
-            activeTab === 'playbook' ? 'bg-[#F2B705] text-[#050505]' : 'bg-zinc-900 text-zinc-400'
-          }`}
-        >
-          План внедрения
-        </button>
-        <button
-          onClick={() => setActiveTab('scripts')}
-          className={`px-3 py-1.5 text-xs font-medium rounded-lg whitespace-nowrap shrink-0 ${
-            activeTab === 'scripts' ? 'bg-[#F2B705] text-[#050505]' : 'bg-zinc-900 text-zinc-400'
-          }`}
-        >
-          Скрипты и ответы
-        </button>
-        <button
-          onClick={() => setActiveTab('legal')}
-          className={`px-3 py-1.5 text-xs font-medium rounded-lg whitespace-nowrap shrink-0 ${
-            activeTab === 'legal' ? 'bg-[#F2B705] text-[#050505]' : 'bg-zinc-900 text-zinc-400'
-          }`}
-        >
-          Документы и 152-ФЗ
-        </button>
-        <button
-          onClick={() => setActiveTab('logo')}
-          className={`px-3 py-1.5 text-xs font-medium rounded-lg whitespace-nowrap shrink-0 ${
-            activeTab === 'logo' ? 'bg-[#F2B705] text-[#050505]' : 'bg-zinc-900 text-zinc-400'
-          }`}
-        >
-          Логотип 1:1
-        </button>
-      </div>
-
       {/* Main Content Container */}
       <main id="top" className="flex-1 max-w-[1380px] w-full mx-auto px-6 lg:px-12 pt-10 pb-24">
+        {/* =====================================================================
+            TAB -8: 6 AUTONOMOUS CODEX ACQUISITION METHODOLOGIES (GIVE PROMPT -> RUN -> USERS ARRIVE)
+        ===================================================================== */}
+        {activeTab === 'codex-auto' && <CodexAutonomousGrowthStudio />}
+        {/* =====================================================================
+            TAB -7: DIAGNOSTIC & FIX PROMPTS FOR O:/Dev/telebot-mvp AGENT REPORTS
+        ===================================================================== */}
+        {activeTab === 'troubleshoot' && <AgentTroubleshootingStudio />}
+        {/* =====================================================================
+            TAB -6: 8 AI-AGENT AUTOMATED GROWTH & ACQUISITION SYSTEMS (ONE-TIME + RECURRING)
+        ===================================================================== */}
+        {activeTab === 'ai-growth' && <AiAgentGrowthPromptsStudio />}
+        {/* =====================================================================
+            TAB -5: 7 UNBLOCKABLE GUERRILLA GROWTH CHANNELS (AFTER PUBLIC CHAT BANS)
+        ===================================================================== */}
+        {activeTab === 'unblockable' && <UnblockableGrowthStudio />}
+        {/* =====================================================================
+            TAB -4: 20 KRASNODAR RESIDENTIAL COMPLEXES NON-SPAM SEED STUDIO
+        ===================================================================== */}
+        {activeTab === 'krd-seed' && <KrasnodarSeedStudio />}
+        {/* =====================================================================
+            TAB -3: 24 UX/UI DESIGN REFERENCES GALLERY (BEHANCE / DRIBBBLE / PINTEREST / MOBBIN)
+        ===================================================================== */}
+        {activeTab === 'ux-gallery' && <DesignReferencesStudio />}
+        {/* =====================================================================
+            TAB -2: AI AGENT PROMPTS FOR MONETIZATION IMPLEMENTATION
+        ===================================================================== */}
+        {activeTab === 'prompts' && <AgentPromptsStudio />}
+        {/* =====================================================================
+            TAB -1: MONETIZATION WITHOUT INTEGRATIONS & ZERO-BUDGET GROWTH
+        ===================================================================== */}
+        {activeTab === 'monetization' && <MonetizationAndGrowthStudio />}
+        {/* =====================================================================
+            TAB 0: A4 PROMOTIONAL FLYER WITH EMBEDDED QR CODE FOR ELEVATOR LOBBY
+        ===================================================================== */}
+        {activeTab === 'flyer' && <A4FlyerStudio selectedLogoConcept={selectedConcept} />}
         {/* =====================================================================
             TAB 1: ATOMIC GTM PLAYBOOK FOR NON-SALES DEVELOPER
         ===================================================================== */}
