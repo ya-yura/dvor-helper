@@ -221,7 +221,7 @@ export const CODEX_METHODOLOGIES: CodexAutonomousMethodology[] = [
    - При создании \`Order\` планируй отложенную проверку через 15 минут.
    - Если через 15 минут заказ всё ещё в статусе \`SEARCHING\` и у него \`0\` откликов:
      - Отправь автору заказа вежливое сообщение: «Ваша заявка активна в ленте дома. Чтобы соседи из вашего подъезда увидели её ещё быстрее, вы можете в одно нажатие переслать готовую карточку задачи в чат своего подъезда или знакомым соседям» с Inline-кнопкой нативного шеринга (\`https://t.me/share/url?...\`).
-   - Проверь, что все существующие и новые проверки типов (\`npm run build\`) проходят успешно.`,
+    - Проверь, что все существующие и новые проверки типов (\`npm run build\`) проходят успешно.`,
   },
 ];
 
@@ -238,6 +238,53 @@ export const CodexAutonomousGrowthStudio: React.FC = () => {
   const toggleCompleted = (id: string) => {
     setCompletedIds((prev) => ({ ...prev, [id]: !prev[id] }));
   };
+
+  const postRebootCodexDeployPrompt = `Сервер 151.252.104.38 перезагружен и SSH-доступ восстановлен. Выполни полный цикл безопасного production-выпуска и активации контура привлечения пользователей из репозитория O:/Dev/telebot-mvp:
+
+1. ФИКСАЦИЯ РЕЛИЗА И СБОРКА:
+   - Проверь git status и аккуратно закоммить все текущие изменения автономного контура привлечения (SSR-витрины, 240 страниц категорий, seed 20 ЖК Краснодара, IndexNow, SVG-карточки, demand-mirror и 15-минутное напоминание BullMQ) в единый релизный коммит.
+   - Убедись, что локальная сборка (npm run build) и prisma validate проходят с кодом 0.
+
+2. BACKUP И ДЕПЛОЙ НА СЕРВЕР (151.252.104.38):
+   - Подключись по SSH к 151.252.104.38, проверь свободное место на диске (df -h) и оперативную память (free -m; при отсутствии swap или нехватке RAM проверь наличие swap-файла 2GB, чтобы сервер больше не зависал).
+   - Сделай резервную копию базы данных PostgreSQL перед миграцией.
+   - Доставь релизный пакет на сервер, примени обе ожидающие миграции Prisma (npx prisma migrate deploy) и перезапусти контейнеры/сервисы.
+   - Дождись успешного ответа публичного /health/ready (код 200).
+
+3. АКТИВАЦИЯ 20 ЖК КРАСНОДАРА И INDEXNOW НА ПРОДЕ:
+   - Запусти на сервере скрипт инициализации 20 ЖК Краснодара (scripts/seed-krasnodar-ecosystem.ts).
+   - ВАЖНО: я как владелец и администратор (ADMIN) официально подтверждаю ввод всех 20 ЖК Краснодара в эксплуатацию — переведи все 20 созданных ЖК из статуса PENDING/неактивных в полностью активный и опубликованный статус (isActive = true / status = APPROVED/ACTIVE), чтобы их витрины /jk/:slug, 240 страниц категорий /jk/:slug/:categorySlug и /sitemap.xml сразу стали доступны публично (HTTP 200).
+   - После активации 20 ЖК отправь пакет URL всех витрин и категорий из /sitemap.xml в Яндекс через наш сервис IndexNow и проверь код ответа IndexNow.
+
+4. ИТОГОВЫЙ ОТЧЁТ:
+   - Проверь реальными HTTP-запросами на проде:
+     a) GET /health/ready
+     b) GET /sitemap.xml (содержит ли все 20 ЖК и 240 страниц категорий)
+     c) GET /jk/samolet и GET /jk/samolet/<любая_категория>
+     d) GET /:indexNowKey.txt
+   - Предоставь подробный отчёт с результатами каждой проверки.`;
+
+  const telemetryAndOwnerDashboardPrompt = `Задача для Codex в репозитории O:/Dev/telebot-mvp:
+Чтобы я как владелец (ADMIN) мог наглядно видеть, ощущать и измерять эффективность всех новых каналов привлечения (SEO-витрин ЖК, калькуляторов, IndexNow, SVG-карточек и зеркала спроса), внедри лёгкую собственную телеметрию воронки без сторонних счётчиков и передачу ежедневной сводки мне в Telegram:
+
+1. УЧЁТ СОБЫТИЙ ВОРОНКИ ПРИВЛЕЧЕНИЯ (Acquisition Funnel Events):
+   - Записывай обезличенные счётчики (в БД или Redis/таблицу статистики по дням и по ЖК):
+     a) \`showcase_view\`: сколько раз живые люди или поисковые роботы открыли публичную страницу \`GET /jk/:slug\` и \`GET /jk/:slug/:categorySlug\` (разделяй обычных посетителей и поисковых ботов YandexBot/Googlebot по User-Agent!).
+     b) \`calculator_use\` / \`bot_cta_click\`: сколько раз человек нажал кнопку перехода в Telegram-бот с публичной витрины или калькулятора (через промежуточный редирект \`GET /go/jk/:slug?src=seo_calc\` на \`https://t.me/<BOT_USERNAME>?start=jk_<JOIN_CODE>\`, чтобы точно считать каждый клик!).
+     c) \`bot_join_from_jk\`: сколько новых пользователей запустили бота по коду \`?start=jk_<JOIN_CODE>\`.
+     d) \`svg_card_view\`: сколько раз открыли карточку мастера \`GET /offers/:id/card.svg\`.
+     e) \`mirror_order_created\`: сколько заказов создано через \`demand-mirror-agent\`.
+
+2. КОМАНДА ДЛЯ ВЛАДЕЛЬЦА В БОТЕ (\`/growth\` или \`/stats\`) + ЕЖЕДНЕВНЫЙ ОТЧЁТ В 21:00:
+   - Добавь для пользователя с ролью \`ADMIN\` команду \`/growth\` в Telegram-боте, которая мгновенно присылает красивую текстовую сводку за сегодня и за 7 дней:
+     • Обходы поисковых роботов (YandexBot / Googlebot): X стр.
+     • Живые визиты на SEO-витрины 20 ЖК: X чел. (топ-3 ЖК по визитам)
+     • Клики по кнопке «Перейти в бот дома» (из калькулятора и витрины): X
+     • Новые регистрации соседей в боте: +X чел.
+     • Создано заказов / услуг: +X (из них через зеркало чатов: Y)
+     • Статус IndexNow: X страниц отправлено в Яндекс (код 200/202).
+   - Настрой в BullMQ ежедневную отправку этой сводки всем пользователям с ролью \`ADMIN\` в 21:00.
+   - Также выведи эти показатели на главной странице веб-админки (\`client/src/management\`). Проверь сборку (\`npm run build\`).`;
 
   const masterSinglePromptForCodex = `Выполни в репозитории O:/Dev/telebot-mvp комплексное внедрение автономного контура привлечения пользователей (Cold Start & Organic Acquisition Engine) в строгом соответствии с docs/privacy.md:
 
@@ -263,6 +310,228 @@ export const CodexAutonomousGrowthStudio: React.FC = () => {
 
   return (
     <div className="space-y-12">
+      {/* LIVE REPORT ANALYSIS: 22:15 (CODE DONE) & 22:21 (VDS SSH HANG + PENDING STATUS) */}
+      <section className="rounded-2xl border-2 border-emerald-500/60 bg-gradient-to-br from-emerald-950/25 via-zinc-900/95 to-zinc-950 p-6 lg:p-8 space-y-6 shadow-xl">
+        <div className="flex flex-wrap items-center justify-between gap-3 border-b border-zinc-800 pb-4">
+          <div className="flex flex-wrap items-center gap-2.5">
+            <span className="px-3 py-1 rounded-md bg-emerald-500 text-[#050505] font-mono-tabular text-xs font-bold">
+              ОТЧЁТ CODEX 22:15 / 22:21 · КОД ГОТОВ НА 100% (25 ФАЙЛОВ, BUILD = 0)
+            </span>
+            <span className="px-3 py-1 rounded-md bg-amber-500/20 border border-amber-500/50 text-amber-300 font-mono-tabular text-xs font-bold">
+              ОСТАЛСЯ 1 ШАГ: ПЕРЕЗАГРУЗКА VDS 151.252.104.38 И АКТИВАЦИЯ 20 ЖК
+            </span>
+          </div>
+          <span className="text-xs font-mono-tabular text-zinc-400">
+            Диагностика состояния O:/Dev/telebot-mvp и сервера 151.252.104.38
+          </span>
+        </div>
+
+        <div className="grid grid-cols-1 lg:grid-cols-12 gap-6 items-start">
+          {/* Left: 3 Key Findings from the 22:15 & 22:21 logs */}
+          <div className="lg:col-span-6 space-y-4">
+            <h2 className="text-xl sm:text-2xl font-bold text-[#F4F4F0] font-display">
+              Что именно произошло и почему деплой остановился на 99% готовности
+            </h2>
+
+            <div className="p-4 rounded-xl bg-emerald-950/25 border border-emerald-700/40 space-y-1.5">
+              <div className="text-xs font-mono-tabular text-emerald-400 font-bold">
+                1. БЛЕСТЯЩИЙ РЕЗУЛЬТАТ В КОДЕ (ОТЧЁТ 22:15 — 25 ФАЙЛОВ, +203/-53)
+              </div>
+              <p className="text-xs sm:text-sm text-zinc-200 leading-relaxed">
+                Codex полностью выполнил все 5 архитектурных задач и починил сборку (код <code>0</code>):
+                работают <code>prisma validate/generate</code>, починен холодный старт в{' '}
+                <code>demand-mirror-agent.ts</code> (через системного <code>ADMIN</code>), создана
+                матрица <strong>20 × 12 = 240 SEO-страниц</strong> с калькулятором, подключён{' '}
+                <strong>IndexNow для Яндекса</strong>, SVG-карточки и 15-минутный BullMQ-консьерж.
+              </p>
+            </div>
+
+            <div className="p-4 rounded-xl bg-rose-950/30 border border-rose-700/50 space-y-1.5">
+              <div className="text-xs font-mono-tabular text-rose-300 font-bold">
+                2. ПОЧЕМУ СЕРВЕР 151.252.104.38 ПРИНЯЛ TCP, НО НЕ ОТДАЛ SSH-БАННЕР (ОТЧЁТ 22:21)
+              </div>
+              <p className="text-xs sm:text-sm text-zinc-200 leading-relaxed">
+                Симптом <em>«SSH к 151.252.104.38:22 принимает TCP, но не присылает SSH-приветствие до таймаута, и /health/ready молчит»</em> — это классический признак того, что на вашем VPS/VDS закончилась оперативная память (<strong>OOM / Swap thrashing</strong>). Ядро Linux (kernel space) ещё отвечает на сетевой пакет <code>SYN-ACK</code>, но процессы в user space (<code>sshd</code>, <code>nginx</code>, <code>docker</code>) зависли в ожидании диска/памяти.
+              </p>
+              <div className="pt-1 text-xs text-amber-300 font-medium">
+                👉 <strong>Что сделать вам прямо сейчас (займёт 1 минуту):</strong> зайдите в личный кабинет вашего хостинг-провайдера (где арендован IP <code>151.252.104.38</code>) и нажмите кнопку <strong>«Перезагрузить сервер» (Reboot / Hard Reset)</strong>.
+              </div>
+            </div>
+
+            <div className="p-4 rounded-xl bg-amber-950/25 border border-amber-700/40 space-y-1.5">
+              <div className="text-xs font-mono-tabular text-amber-300 font-bold">
+                3. ВАЖНАЯ ДЕТАЛЬ: CODEX СОЗДАЁТ 20 ЖК В СТАТУСЕ «PENDING» (НЕАКТИВНЫМИ)
+              </div>
+              <p className="text-xs sm:text-sm text-zinc-200 leading-relaxed">
+                Обратите внимание на строчку из отчёта Codex:{' '}
+                <em>«Новые записи остаются PENDING и неактивными до проверки владельцем»</em>. Из-за
+                перестраховки Codex создал ЖК выключенными! Если их не перевести в{' '}
+                <code>ACTIVE / isActive: true</code>, витрины <code>/jk/:slug</code> будут возвращать
+                404. В промпте справа уже добавлена прямая команда от лица владельца (ADMIN) сразу
+                перевести все 20 ЖК в активный боевой статус.
+              </p>
+            </div>
+          </div>
+
+          {/* Right: Copyable Post-Reboot Prompt for Codex */}
+          <div className="lg:col-span-6 rounded-xl bg-[#0B0C0E] border border-[#F2B705]/60 p-5 space-y-4">
+            <div className="flex flex-wrap items-center justify-between gap-2">
+              <div className="space-y-0.5">
+                <span className="text-xs font-mono-tabular uppercase tracking-wider text-[#F2B705] font-bold">
+                  ШАГ ПОСЛЕ ПЕРЕЗАГРУЗКИ VDS 151.252.104.38
+                </span>
+                <h3 className="text-base font-bold text-[#F4F4F0]">
+                  Промпт для Codex: Коммит + Деплой + Активация 20 ЖК + Пинг Яндекса
+                </h3>
+              </div>
+
+              <button
+                onClick={() => handleCopy('post-reboot-deploy', postRebootCodexDeployPrompt)}
+                className="px-4 py-2.5 rounded-xl bg-[#F2B705] hover:bg-[#f7c62e] text-[#050505] font-bold text-xs flex items-center gap-1.5 transition-colors cursor-pointer shrink-0"
+              >
+                {copiedId === 'post-reboot-deploy' ? (
+                  <>
+                    <Check className="w-4 h-4" />
+                    <span>Промпт деплоя скопирован!</span>
+                  </>
+                ) : (
+                  <>
+                    <Copy className="w-4 h-4" />
+                    <span>Скопировать промпт деплоя</span>
+                  </>
+                )}
+              </button>
+            </div>
+
+            <pre className="text-xs font-mono-tabular text-zinc-200 whitespace-pre-wrap leading-relaxed p-4 rounded-lg bg-zinc-950 border border-zinc-800/90 max-h-[380px] overflow-y-auto select-all">
+              {postRebootCodexDeployPrompt}
+            </pre>
+          </div>
+        </div>
+      </section>
+
+      {/* OWNER PLAYBOOK: HOW IT WORKS IN PLAIN WORDS + HOW TO TOUCH & VERIFY + HOW TO SEE RESULTS */}
+      <section className="rounded-2xl border border-[#F2B705]/50 bg-zinc-900/75 p-6 lg:p-8 space-y-6">
+        <div className="space-y-2 border-b border-zinc-800 pb-4">
+          <span className="px-2.5 py-1 rounded bg-[#F2B705]/20 text-[#F2B705] font-mono-tabular text-xs font-bold">
+            ИНСТРУКЦИЯ ВЛАДЕЛЬЦА ПРОСТЫМИ СЛОВАМИ · ЧТО ДЕЛАТЬ ПОСЛЕ ДЕПЛОЯ И КАК «ПОЩУПАТЬ» РЕЗУЛЬТАТ
+          </span>
+          <h2 className="text-2xl sm:text-3xl font-bold text-[#F4F4F0] font-display">
+            Как вся эта машина работает на практике, как проверить её за 5 минут и как видеть приток людей
+          </h2>
+        </div>
+
+        {/* 4 Plain-Language Cards */}
+        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-4">
+          <div className="p-4 rounded-xl bg-zinc-950/90 border border-zinc-800 space-y-2">
+            <div className="text-xs font-mono-tabular text-[#F2B705] font-bold">
+              1. КАК ЭТО РАБОТАЕТ «НА ПАЛЬЦАХ»
+            </div>
+            <div className="text-sm font-bold text-[#F4F4F0]">
+              260 «ловушек» в интернете вместо спама в чатах
+            </div>
+            <p className="text-xs text-zinc-300 leading-relaxed">
+              Раньше ваш бот был «закрытой комнатой», куда никто не мог попасть без прямой ссылки.
+              Теперь ваш сервер развернул в открытом интернете <strong>20 страниц ЖК</strong> и{' '}
+              <strong>240 страниц бытовых услуг</strong> (например, «ЖК Самолёт — выгул собак», «ЖК
+              Фонтаны — мелкий ремонт») с онлайн-калькулятором цены. Житель ищет услугу в Яндексе →
+              попадает на вашу страницу → считает цену → жмёт кнопку и оказывается внутри бота сразу
+              в своём ЖК.
+            </p>
+          </div>
+
+          <div className="p-4 rounded-xl bg-zinc-950/90 border border-zinc-800 space-y-2">
+            <div className="text-xs font-mono-tabular text-emerald-400 font-bold">
+              2. КАК УБЕДИТЬСЯ, ЧТО ВСЁ РАБОТАЕТ (ЗА 3 МИНУТЫ)
+            </div>
+            <div className="text-sm font-bold text-[#F4F4F0]">
+              4 ссылки, которые вы открываете сами в браузере
+            </div>
+            <ul className="text-xs text-zinc-300 space-y-1.5 leading-relaxed">
+              <li>
+                • <code>/sitemap.xml</code> — вы своими глазами видите список из 240+ ссылок на все
+                ЖК Краснодара.
+              </li>
+              <li>
+                • <code>/jk/samolet</code> — открывается красивая веб-витрина ЖК «Самолёт» с
+                кнопкой входа в бот.
+              </li>
+              <li>
+                • <code>/jk/samolet/repair</code> (или категория из sitemap) — работает
+                калькулятор расценок.
+              </li>
+              <li>
+                • Создаёте тестовый заказ в боте и ждёте 15 мин — бот сам присылает вам кнопку
+                «Поделиться с соседями».
+              </li>
+            </ul>
+          </div>
+
+          <div className="p-4 rounded-xl bg-zinc-950/90 border border-zinc-800 space-y-2">
+            <div className="text-xs font-mono-tabular text-sky-400 font-bold">
+              3. ЧТО НУЖНО СДЕЛАТЬ ВАМ РУКАМИ (1 РАЗ ЗА 5 МИН)
+            </div>
+            <div className="text-sm font-bold text-[#F4F4F0]">
+              Подключить бесплатный Яндекс.Вебмастер
+            </div>
+            <p className="text-xs text-zinc-300 leading-relaxed">
+              Зайдите на <code>webmaster.yandex.ru</code>, добавьте ваш домен и вставьте ссылку на{' '}
+              <code>https://ваш-домен/sitemap.xml</code>. Там вы увидите живые графики: сколько раз
+              жители Краснодара увидели ваши ЖК в поиске Яндекса, по каким словам («ЖК Галактика
+              сантехник») они кликнули и сколько страниц вошло в индекс благодаря IndexNow.
+            </p>
+          </div>
+
+          <div className="p-4 rounded-xl bg-zinc-950/90 border border-zinc-800 space-y-2">
+            <div className="text-xs font-mono-tabular text-purple-400 font-bold">
+              4. КАК ОЩУЩАТЬ РЕЗУЛЬТАТ КАЖДЫЙ ВЕЧЕР В ТЕЛЕГРАМЕ
+            </div>
+            <div className="text-sm font-bold text-[#F4F4F0]">
+              Авто-отчёт воронки в 21:00 прямо вам в бот
+            </div>
+            <p className="text-xs text-zinc-300 leading-relaxed">
+              Чтобы вы не гадали, заходит ли кто-то на эти 240 страниц, дайте Codex промпт ниже: он
+              добавит команду <code>/growth</code> и ежедневный вечерний отчёт вам в Telegram
+              (сколько ботов Яндекса пришло, сколько живых людей открыли витрины ЖК, сколько нажали
+              «Перейти в бот» и сколько зарегистрировались).
+            </p>
+          </div>
+        </div>
+
+        {/* Copyable Prompt for Live Telemetry & Daily Telegram Report */}
+        <div className="rounded-xl bg-[#0B0C0E] border border-zinc-800 p-5 space-y-3">
+          <div className="flex flex-wrap items-center justify-between gap-2">
+            <div className="flex items-center gap-2">
+              <Terminal className="w-4 h-4 text-[#F2B705]" />
+              <span className="text-xs font-mono-tabular uppercase tracking-wider text-[#F2B705] font-bold">
+                ДОПОЛНИТЕЛЬНЫЙ ПРОМПТ ДЛЯ CODEX · НАГЛЯДНЫЙ ПУЛЬС ПРИТОКА ПОЛЬЗОВАТЕЛЕЙ В TELEGRAM (/growth)
+              </span>
+            </div>
+
+            <button
+              onClick={() => handleCopy('telemetry-owner-prompt', telemetryAndOwnerDashboardPrompt)}
+              className="px-3.5 py-2 rounded-lg bg-[#F2B705] hover:bg-[#f7c62e] text-[#050505] font-bold text-xs flex items-center gap-1.5 transition-colors cursor-pointer shrink-0"
+            >
+              {copiedId === 'telemetry-owner-prompt' ? (
+                <>
+                  <Check className="w-3.5 h-3.5" />
+                  <span>Промпт аналитики скопирован!</span>
+                </>
+              ) : (
+                <>
+                  <Copy className="w-3.5 h-3.5" />
+                  <span>Скопировать промпт «Пульс Притока в Telegram»</span>
+                </>
+              )}
+            </button>
+          </div>
+
+          <pre className="text-xs font-mono-tabular text-zinc-200 whitespace-pre-wrap leading-relaxed p-4 rounded-lg bg-zinc-950 border border-zinc-800/90 max-h-[260px] overflow-y-auto select-all">
+            {telemetryAndOwnerDashboardPrompt}
+          </pre>
+        </div>
+      </section>
+
       {/* Hero Banner */}
       <section className="grid grid-cols-1 lg:grid-cols-12 gap-8 items-stretch pb-10 border-b border-zinc-800/80">
         <div className="lg:col-span-8 space-y-4">

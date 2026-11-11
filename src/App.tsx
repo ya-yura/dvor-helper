@@ -32,6 +32,7 @@ import { UnblockableGrowthStudio } from './components/UnblockableGrowthStudio';
 import { AiAgentGrowthPromptsStudio } from './components/AiAgentGrowthPromptsStudio';
 import { AgentTroubleshootingStudio } from './components/AgentTroubleshootingStudio';
 import { CodexAutonomousGrowthStudio } from './components/CodexAutonomousGrowthStudio';
+import { TelegramViralGrowthStudio } from './components/TelegramViralGrowthStudio';
 import {
   ATOMIC_STEPS,
   LEGAL_DOCUMENTS,
@@ -42,6 +43,7 @@ import {
 } from './data/gtmPlaybookData';
 
 type ActiveWorkspaceTab =
+  | 'tg-viral'
   | 'codex-auto'
   | 'troubleshoot'
   | 'ai-growth'
@@ -57,8 +59,8 @@ type ActiveWorkspaceTab =
   | 'logo';
 
 export default function App() {
-  // Default to the Codex Autonomous Growth Methodologies Studio
-  const [activeTab, setActiveTab] = useState<ActiveWorkspaceTab>('codex-auto');
+  // Default to the Telegram Viral Growth Studio
+  const [activeTab, setActiveTab] = useState<ActiveWorkspaceTab>('tg-viral');
 
   // Playbook interactive checklist state persisted in localStorage
   const [completedChecklist, setCompletedChecklist] = useState<Record<string, boolean>>(() => {
@@ -284,10 +286,11 @@ export default function App() {
           </div>
         </div>
 
-        {/* All 13 Sections Navigation Strip (Desktop & Mobile) */}
+        {/* All 14 Sections Navigation Strip (Desktop & Mobile) */}
         <div className="max-w-[1380px] w-full mx-auto px-6 lg:px-12 pb-3 flex items-center gap-1.5 overflow-x-auto">
           {[
-            { id: 'codex-auto', label: '⚡ Codex: Авто-Приток (6 методологий)' },
+            { id: 'tg-viral', label: '🚀 Telegram-Взрыв (6 авто-механик Codex)' },
+            { id: 'codex-auto', label: '⚡ Codex: Авто-Приток (SEO + Деплой)' },
             { id: 'troubleshoot', label: '1. Разбор 4 Отчётов + Фиксы' },
             { id: 'ai-growth', label: '2. Холодный Старт (0→500)' },
             { id: 'unblockable', label: '3. Анти-Бан Посев 0 ₽' },
@@ -318,6 +321,10 @@ export default function App() {
 
       {/* Main Content Container */}
       <main id="top" className="flex-1 max-w-[1380px] w-full mx-auto px-6 lg:px-12 pt-10 pb-24">
+        {/* =====================================================================
+            TAB -9: 6 TELEGRAM-NATIVE VIRAL GROWTH MECHANICS FOR CODEX
+        ===================================================================== */}
+        {activeTab === 'tg-viral' && <TelegramViralGrowthStudio />}
         {/* =====================================================================
             TAB -8: 6 AUTONOMOUS CODEX ACQUISITION METHODOLOGIES (GIVE PROMPT -> RUN -> USERS ARRIVE)
         ===================================================================== */}
