@@ -33,6 +33,7 @@ import { AiAgentGrowthPromptsStudio } from './components/AiAgentGrowthPromptsStu
 import { AgentTroubleshootingStudio } from './components/AgentTroubleshootingStudio';
 import { CodexAutonomousGrowthStudio } from './components/CodexAutonomousGrowthStudio';
 import { TelegramViralGrowthStudio } from './components/TelegramViralGrowthStudio';
+import { TelegramWelcomePictureStudio } from './components/TelegramWelcomePictureStudio';
 import {
   ATOMIC_STEPS,
   LEGAL_DOCUMENTS,
@@ -43,6 +44,7 @@ import {
 } from './data/gtmPlaybookData';
 
 type ActiveWorkspaceTab =
+  | 'tg-welcome-pic'
   | 'tg-viral'
   | 'codex-auto'
   | 'troubleshoot'
@@ -59,7 +61,7 @@ type ActiveWorkspaceTab =
   | 'logo';
 
 export default function App() {
-  // Default to the Telegram Viral Growth Studio
+  // Default to the Telegram Viral Growth & Screenshot Diagnosis Studio
   const [activeTab, setActiveTab] = useState<ActiveWorkspaceTab>('tg-viral');
 
   // Playbook interactive checklist state persisted in localStorage
@@ -286,9 +288,10 @@ export default function App() {
           </div>
         </div>
 
-        {/* All 14 Sections Navigation Strip (Desktop & Mobile) */}
+        {/* All 15 Sections Navigation Strip (Desktop & Mobile) */}
         <div className="max-w-[1380px] w-full mx-auto px-6 lg:px-12 pb-3 flex items-center gap-1.5 overflow-x-auto">
           {[
+            { id: 'tg-welcome-pic', label: '🖼️ Welcome-Картинка 640×360 (@BotFather)' },
             { id: 'tg-viral', label: '🚀 Telegram-Взрыв (6 авто-механик Codex)' },
             { id: 'codex-auto', label: '⚡ Codex: Авто-Приток (SEO + Деплой)' },
             { id: 'troubleshoot', label: '1. Разбор 4 Отчётов + Фиксы' },
@@ -321,6 +324,10 @@ export default function App() {
 
       {/* Main Content Container */}
       <main id="top" className="flex-1 max-w-[1380px] w-full mx-auto px-6 lg:px-12 pt-10 pb-24">
+        {/* =====================================================================
+            TAB -10: TELEGRAM WELCOME PICTURE STUDIO (640x360 FOR @BOTFATHER)
+        ===================================================================== */}
+        {activeTab === 'tg-welcome-pic' && <TelegramWelcomePictureStudio />}
         {/* =====================================================================
             TAB -9: 6 TELEGRAM-NATIVE VIRAL GROWTH MECHANICS FOR CODEX
         ===================================================================== */}
